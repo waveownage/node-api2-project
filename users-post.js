@@ -127,6 +127,33 @@ PostRouter.delete("/posts/:id", (req, res) => {
         })
     })
 
+//PUT ENDPOINTS
+
+PostRouter.put("/posts/:id", (req, res) => {
+	if (!req.body.title || !req.body.contents) {
+		return res.status(400).json({
+			message: "Missing user name or email",
+		})
+	}
+
+	posts.update(req.params.id, req.body)
+		.then((user) => {
+			if (user) {
+				res.status(200).json(user)
+			} else {
+				res.status(404).json({
+					message: "The user could not be found",
+				})
+			}
+		})
+		.catch((error) => {
+			console.log(error)
+			res.status(500).json({
+				message: "Error updating the user",
+			})
+		})
+})
+
 
 
 module.exports = PostRouter
