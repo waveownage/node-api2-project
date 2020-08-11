@@ -41,4 +41,29 @@ PostRouter.get("/posts", (req, res) => {
       });
   });
 
+//GET Comments from Post ID
+
+  PostRouter.get("/posts/:id/comments", (req, res) => {
+    posts
+      .findById(req.params.id)
+      .then(post => {
+        if (!post) {
+          return res.status(404).json({
+            message: "The post with the specified ID does not exist."
+          });
+        } else {
+          return posts.findPostComments(req.params.id);
+        }
+      })
+      .then(comments => {
+        res.json(comments);
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(500).json({
+          error: "The comments information could not be retrieved."
+        });
+      });
+  });
+
 module.exports = PostRouter;
