@@ -66,6 +66,8 @@ PostRouter.get("/posts", (req, res) => {
       });
   });
 
+//POST new Post
+
   PostRouter.post("/posts", (req, res) => {
     if (!req.body.title || !req.body.contents) {
       return res.status(400).json({
@@ -85,5 +87,32 @@ PostRouter.get("/posts", (req, res) => {
       });
   });
 });
+
+//POST new comment
+
+PostRouter.post("/posts/:id/comments", (req, res) => {
+    if (!req.params.id) {
+      res.status(404).json({
+        message: "The post with the specified ID does not exist."
+      });
+    } else {
+      if (!req.body.text) {
+        res.status(400).json({
+          errorMessage: "Please provide text for the comment."
+        });
+      } else {
+        posts
+          .insertComment({ ...req.body, post_id: req.params.id })
+          .then(comment => {
+            res.status(201).json(comment);
+          })
+          .catch(error => {
+            res.status(500).json({
+              error: "Cannot save comment"
+            });
+          });
+      }
+    }
+  });
 
 module.exports = PostRouter;
